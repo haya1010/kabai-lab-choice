@@ -18,49 +18,48 @@ const [othersSecondChoices, setOthersSecondChoices] = useState([]);
 const [othersThirdChoices, setOthersThirdChoices] = useState([]);
 
 const [chosenLab, setChosenLab] = useState([null, null, null]);
+const [userCount, setUserCount] = useState();
   
   useEffect(() => {
-    
- 
-
-  const getMyChoices = async() => {
-    const docRef = doc(db, "choices", localStorage.getItem('email'));
-    const docSnap = await getDoc(docRef);
   
-    if (docSnap.exists()) {
-      setChosenLab(docSnap.data().choices);
-    }
-  }
-
-  getMyChoices();
-
-  const getOthersChoices = async() => {
-    const data = await getDocs(collection(db, 'choices'));
-   
-    setOthersFirstChoices([]);
-    setOthersSecondChoices([]);
-    setOthersThirdChoices([]);
-    
-    data.docs.map((doc) => {
-      if (doc.id != localStorage.getItem('email')) { 
-        setOthersFirstChoices((prevState) => ([...prevState, doc.data().choices[0]]))
-        setOthersSecondChoices((prevState) => ([...prevState, doc.data().choices[1]]))
-        setOthersThirdChoices((prevState) => ([...prevState, doc.data().choices[2]]))
-      }
-    })
-  };
-  
+  getMyChoices(); 
   getOthersChoices();
-  
   const unsubscribe = onSnapshot(collection(db, 'choices'), (snapshot) => {
-    
-    getOthersChoices()
-  
+    getMyChoices();
+    getOthersChoices();
+    getCount();
   });
 }, []);
 
+const getCount = async() => {
+  const data = await getDocs(collection(db, 'choices'));
+  setUserCount(data.docs.length);
+};
 
+const getMyChoices = async() => {
+  const docRef = doc(db, "choices", localStorage.getItem('email'));
+  const docSnap = await getDoc(docRef);
 
+  if (docSnap.exists()) {
+    setChosenLab(docSnap.data().choices);
+  }
+}
+
+const getOthersChoices = async() => {
+  const data = await getDocs(collection(db, 'choices'));
+ 
+  setOthersFirstChoices([]);
+  setOthersSecondChoices([]);
+  setOthersThirdChoices([]);
+  
+  data.docs.map((doc) => {
+    if (doc.id != localStorage.getItem('email')) { 
+      setOthersFirstChoices((prevState) => ([...prevState, doc.data().choices[0]]))
+      setOthersSecondChoices((prevState) => ([...prevState, doc.data().choices[1]]))
+      setOthersThirdChoices((prevState) => ([...prevState, doc.data().choices[2]]))
+    }
+  })
+};
 
 const choseLab = (priority, labIndex) => {
 
@@ -69,7 +68,11 @@ const choseLab = (priority, labIndex) => {
   
   chosenLab.map((aChosenLab, priorityIndex) => {
     if (priorityIndex === priority) {
-      chosenLabList[priorityIndex] = labIndex
+      if (chosenLabList[priorityIndex] == labIndex) {
+        chosenLabList[priorityIndex] = null;
+      } else {
+        chosenLabList[priorityIndex] = labIndex;
+      }
     } else if (priorityIndex === chosenLab.indexOf(labIndex))  {
       chosenLabList[priorityIndex] = null
     } else {
@@ -79,7 +82,6 @@ const choseLab = (priority, labIndex) => {
 )
   
   setChosenLab(chosenLabList)
-  
   setDb(chosenLabList);
   
   
@@ -103,6 +105,8 @@ const login = () => {
     localStorage.setItem('isAuth', true);
     localStorage.setItem('email', result.user.email);
    
+    getMyChoices();
+    getOthersChoices();
   });
 }
 
@@ -126,6 +130,13 @@ return (
 <br />
 研究室選択
 </h1>
+<center>
+<p style={{'display':'inline', 'font-size':'13px'}}>現在</p>
+  <p style={{'display':'inline', 'font-size':'20px'}}>{ userCount }</p>
+  <p style={{'display':'inline', 'font-size':'13px'}}>人が登録中</p>
+<br />
+<br />
+</center>
 
 
 { isAuth ? (
@@ -171,7 +182,11 @@ return (
 
       <tr>
         
-        <td align='center'>{labName}</td>
+        <td align='center'>
+          {labName} <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>第1志望</p>
+          <p style={{'display':'inline', 'font-size':'20px', 'opacity':'0.8'}}>{othersFirstChoices.filter(labIndex => labIndex === i).length + ((chosenLab[0]===i) ? 1: 0)}</p> 
+          <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>人</p>    
+        </td>
 
         <td align='center'>
          <>
