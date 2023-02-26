@@ -11,7 +11,7 @@ import './App.css'
 function App() {
 
 const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'));
-let labNames = ['松本', '冨重', '三ツ石', '滝沢', '浅井', '大井'];
+let labNames = ['松本', '冨重', '三ツ石', '滝沢', '浅井', '大井', '青木', '長尾', '北川', '久保', '渡邊', '溶媒要素技術部(旧猪俣研)', '中山', '珠玖', '服部', '魚住', '梅津', '吉岡', '壹岐', '福島', '芥川', '中川', '陣内', '加藤', '西原', '笠井', '本間', '村松', '西堀', '殷', '蟹江', '(旧)超臨界ナノ工学分野'];
 
 const [othersFirstChoices, setOthersFirstChoices] = useState([]);
 const [othersSecondChoices, setOthersSecondChoices] = useState([]);
@@ -116,15 +116,17 @@ const logout = () => {
 
 
 
-
 return (
 
 
 <>
 
 <h1 align='center'>
-令和5年度　化学・バイオ工学研究室選択
+令和5年度　化学・バイオ
+<br />
+研究室選択
 </h1>
+
 
 { isAuth ? (
 
@@ -137,23 +139,24 @@ return (
     <tr>
       <td>
       
-<button onClick={login}>ログイン</button>
+<button onClick={logout}>ログアウト</button>
       </td>
     </tr>
   </table>
   </center>
 
-  <h2 align='center'><font color="red">締切られました</font></h2>
-  <h2 align='center'><font color="blue">研究室が確定しました</font></h2>
+  {/* <h2 align='center'><font color="red">締切られました</font></h2>
+  <h2 align='center'><font color="blue">研究室が確定しました</font></h2> */}
 
 
-
+<br />
+<br />
   
 <table border='1px solid black' borderCollaps='collapse' align='center'>
 
 <tr>
 
-<th>番号</th>
+
 <th>研究室名</th>
 <th>第一希望</th>
 <th>第二希望</th>
@@ -166,55 +169,37 @@ return (
     return (
       
 
-
       <tr>
-        <td align="center">{i+1}</td>
+        
         <td align='center'>{labName}</td>
 
         <td align='center'>
          <>
+        {othersFirstChoices.map((labIndex) => labIndex==i ? <div>※</div>: <></> )}
         <button onClick={() => {choseLab(0, i)}} className={chosenLab[0]==i ? 'kakuteime' : 'notme'}> 
-        <p>{chosenLab[0]==i ? '選択中' : '選択する'}</p>
-        
-        
-        
-        </button>{'※'.repeat(othersFirstChoices.filter(c => c == i).length)}
+        {chosenLab[0]==i ? '選択中' : '選択する'}
+        </button>
         </>
         </td>
         
 
         <td align='center'>
          <>
-        <button onClick={() => {choseLab(1, i)}} className={chosenLab[1]==i ? 'kakuteime' : 'me'}>  
-        {chosenLab[1]==i ? (
-          <p>選択中</p>
-        ):(
-          <p>選択する</p>
-        )
-        } 
-        </button>{'※'.repeat(othersSecondChoices.filter(c => c == i).length)}
+        {othersSecondChoices.map((labIndex) => labIndex==i ? <div>※</div>: <></> )}
+        <button onClick={() => {choseLab(1, i)}} className={chosenLab[1]==i ? 'kakuteime' : 'notme'}>  
+        {chosenLab[1]==i ? '選択中' : '選択する'}
+        </button>
         </>
         </td>
 
         <td align='center'>
          <>
-        <button onClick={() => {choseLab(2, i)}} className={chosenLab[2]==i ? 'kakuteime' : 'me'}>  
-        {chosenLab[2]==i ? (
-          <p>選択中</p>
-        ):(
-          <p>選択する</p>
-        )
-        } 
-        </button>{'※'.repeat(othersThirdChoices.filter(c => c == i).length)}
+         {othersThirdChoices.map((labIndex) => labIndex==i ? <div>※</div>: <></> )}
+        <button onClick={() => {choseLab(2, i)}} className={chosenLab[2]==i ? 'kakuteime' : 'notme'}>  
+        {chosenLab[2]==i ? '選択中' : '選択する'} 
+        </button>
         </>
-        </td>
-
-      
-        
-
-        
-        
-        
+        </td>   
       </tr>
     )
   })
@@ -225,9 +210,11 @@ return (
 </table>
 
 <center>
-    <a href='https://hb.afl.rakuten.co.jp/hsc/25dae539.5fc082df.25dae53a.0f1e33ff/?link_type=pict&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJwaWN0IiwiY29sIjoxLCJjYXQiOiI0NCIsImJhbiI6IjQ2MDEzNSIsImFtcCI6ZmFsc2V9' target="_blank" rel="nofollow sponsored noopener" style={{'word-wrap':'break-word'}}>
+    <br />
+    <br />
+    {/* <a href='https://hb.afl.rakuten.co.jp/hsc/25dae539.5fc082df.25dae53a.0f1e33ff/?link_type=pict&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJwaWN0IiwiY29sIjoxLCJjYXQiOiI0NCIsImJhbiI6IjQ2MDEzNSIsImFtcCI6ZmFsc2V9' target="_blank" rel="nofollow sponsored noopener" style={{'word-wrap':'break-word'}}>
     <img src="https://hbb.afl.rakuten.co.jp/hsb/25dae539.5fc082df.25dae53a.0f1e33ff/?me_id=1&me_adv_id=460135&t=pict" border="0" style={{'margin':'2px'}} alt="" title=""></img>
-    </a>
+    </a> */}
   </center>
    
 
@@ -235,16 +222,18 @@ return (
 </>
 ):(
 <>
-<center>ようこそ {localStorage.getItem('email')} さん
+<center>ログインしてください
   <table>
     <tr>
       <td>
-<button onClick={logout}>ログアウト</button>
+<button onClick={login}>ログイン</button>
       
       </td>
     </tr>
   </table>
   </center>
+  <br />
+  <br />
 </>
 
 
