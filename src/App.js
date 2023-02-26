@@ -9,7 +9,7 @@ import { auth, db, provider } from './firebase';
 function App() {
 
 const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'));
-let labNames = ['松本', '冨重', '三ツ石', '滝沢', '浅井'];
+let labNames = ['松本', '冨重', '三ツ石', '滝沢', '浅井', '大井'];
 
 const [othersFirstChoices, setOthersFirstChoices] = useState([]);
 const [othersSecondChoices, setOthersSecondChoices] = useState([]);
