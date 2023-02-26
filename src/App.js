@@ -4,6 +4,8 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query,
 import {useEffect, useState} from 'react';
 import './App.css';
 import { auth, db, provider } from './firebase';
+import './App.css'
+
 
 
 function App() {
@@ -123,11 +125,6 @@ return (
 <h1 align='center'>
 令和5年度　化学・バイオ工学研究室選択
 </h1>
-{ isAuth ? (
-<button onClick={logout}>ログアウト</button>
-):(
-<button onClick={login}>ログイン</button>
-)}
 
 { isAuth ? (
 
@@ -139,16 +136,11 @@ return (
   <table>
     <tr>
       <td>
-      { isAuth ? (
-<button onClick={logout}>ログアウト</button>
-):(
+      
 <button onClick={login}>ログイン</button>
-)}
       </td>
     </tr>
   </table>
-  
-
   </center>
 
   <h2 align='center'><font color="red">締切られました</font></h2>
@@ -181,16 +173,11 @@ return (
 
         <td align='center'>
          <>
-        <button onClick={() => {choseLab(0, i)}} style={chosenLab[0]==i ? {color: 'red'} : {color: 'black'}}> 
+        <button onClick={() => {choseLab(0, i)}} className={chosenLab[0]==i ? 'kakuteime' : 'notme'}> 
         <p>{chosenLab[0]==i ? '選択中' : '選択する'}</p>
         
         
-        {/* {chosenLab[0]==i ? (
-          <p>選択中</p>
-        ):(
-          <p>選択する</p>
-        )
-        }  */}
+        
         </button>{'※'.repeat(othersFirstChoices.filter(c => c == i).length)}
         </>
         </td>
@@ -198,7 +185,7 @@ return (
 
         <td align='center'>
          <>
-        <button onClick={() => {choseLab(1, i)}} style={chosenLab[1]==i ? {color: 'red'} : {color: 'black'}}>  
+        <button onClick={() => {choseLab(1, i)}} className={chosenLab[1]==i ? 'kakuteime' : 'me'}>  
         {chosenLab[1]==i ? (
           <p>選択中</p>
         ):(
@@ -211,7 +198,7 @@ return (
 
         <td align='center'>
          <>
-        <button onClick={() => {choseLab(2, i)}} style={chosenLab[2]==i ? {color: 'red'} : {color: 'black'}}>  
+        <button onClick={() => {choseLab(2, i)}} className={chosenLab[2]==i ? 'kakuteime' : 'me'}>  
         {chosenLab[2]==i ? (
           <p>選択中</p>
         ):(
@@ -237,11 +224,30 @@ return (
 
 </table>
 
+<center>
+    <a href='https://hb.afl.rakuten.co.jp/hsc/25dae539.5fc082df.25dae53a.0f1e33ff/?link_type=pict&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJwaWN0IiwiY29sIjoxLCJjYXQiOiI0NCIsImJhbiI6IjQ2MDEzNSIsImFtcCI6ZmFsc2V9' target="_blank" rel="nofollow sponsored noopener" style={{'word-wrap':'break-word'}}>
+    <img src="https://hbb.afl.rakuten.co.jp/hsb/25dae539.5fc082df.25dae53a.0f1e33ff/?me_id=1&me_adv_id=460135&t=pict" border="0" style={{'margin':'2px'}} alt="" title=""></img>
+    </a>
+  </center>
+   
 
 
 </>
 ):(
-<p>ログインしろー</p>
+<>
+<center>ようこそ {localStorage.getItem('email')} さん
+  <table>
+    <tr>
+      <td>
+<button onClick={logout}>ログアウト</button>
+      
+      </td>
+    </tr>
+  </table>
+  </center>
+</>
+
+
 )}
 </>
 
