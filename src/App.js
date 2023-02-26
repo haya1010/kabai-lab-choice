@@ -53,7 +53,7 @@ const [chosenLab, setChosenLab] = useState([null, null, null]);
   getOthersChoices();
   
   const unsubscribe = onSnapshot(collection(db, 'choices'), (snapshot) => {
-    console.log('changed');
+    
     getOthersChoices()
   
   });
