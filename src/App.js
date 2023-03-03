@@ -4,14 +4,19 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, onSnapshot, query,
 import {useEffect, useState} from 'react';
 import './App.css';
 import { auth, db, provider } from './firebase';
-import './App.css'
-
+import './App.css';
+import { labNames, userNames } from './data'
 
 
 function App() {
 
+
 const [isAuth, setIsAuth] = useState(localStorage.getItem('isAuth'));
-let labNames = ['松本', '冨重', '三ツ石', '滝沢', '浅井', '大井', '青木', '長尾', '北川', '久保', '渡邊', '溶媒要素技術部(旧猪俣研)', '中山', '珠玖', '服部', '魚住', '梅津', '吉岡', '壹岐', '福島', '芥川', '中川', '陣内', '加藤', '西原', '笠井', '本間', '村松', '西堀', '殷', '蟹江', '(旧)超臨界ナノ工学分野'];
+const [uid, setUid] = useState(localStorage.getItem('uid'));
+const [signUpList, setSignUpList] = useState([]);
+
+// let labNames = ['松本', '冨重', '三ツ石', '滝沢', '浅井', '大井', '青木', '長尾', '北川', '久保', '渡邊', '溶媒要素技術部(旧猪俣研)', '中山', '珠玖', '服部', '魚住', '梅津', '吉岡', '壹岐', '福島', '芥川', '中川', '陣内', '加藤', '西原', '笠井', '本間', '村松', '西堀', '殷', '蟹江', '(旧)超臨界ナノ工学分野'];
+// let labNames = labNames;
 
 const [othersFirstChoices, setOthersFirstChoices] = useState([]);
 const [othersSecondChoices, setOthersSecondChoices] = useState([]);
@@ -22,42 +27,47 @@ const [userCount, setUserCount] = useState();
   
   useEffect(() => {
   
-  getMyChoices(); 
-  getOthersChoices();
+  // getMyChoices(); 
+  // getOthersChoices();
   const unsubscribe = onSnapshot(collection(db, 'choices'), (snapshot) => {
-    getMyChoices();
-    getOthersChoices();
-    getCount();
+    getCurrentChoices();
+    // getOthersChoices();
+    // getCount();
   });
 }, []);
 
-const getCount = async() => {
+// const getCount = async() => {
+//   const data = await getDocs(collection(db, 'choices'));
+//   setUserCount(data.docs.length);
+// };
+
+// const getMyChoices = async() => {
+//   const docRef = doc(db, "choices", localStorage.getItem('email'));
+//   const docSnap = await getDoc(docRef);
+
+//   if (docSnap.exists()) {
+//     setChosenLab(docSnap.data().choices);
+//   }
+// }
+
+const getCurrentChoices = async() => {
   const data = await getDocs(collection(db, 'choices'));
   setUserCount(data.docs.length);
-};
-
-const getMyChoices = async() => {
-  const docRef = doc(db, "choices", localStorage.getItem('email'));
-  const docSnap = await getDoc(docRef);
-
-  if (docSnap.exists()) {
-    setChosenLab(docSnap.data().choices);
-  }
-}
-
-const getOthersChoices = async() => {
-  const data = await getDocs(collection(db, 'choices'));
  
   setOthersFirstChoices([]);
   setOthersSecondChoices([]);
   setOthersThirdChoices([]);
-  
+  setSignUpList([]);
+
   data.docs.map((doc) => {
-    if (doc.id != localStorage.getItem('email')) { 
+    if (doc.id != localStorage.getItem('uid')) { 
       setOthersFirstChoices((prevState) => ([...prevState, doc.data().choices[0]]))
       setOthersSecondChoices((prevState) => ([...prevState, doc.data().choices[1]]))
       setOthersThirdChoices((prevState) => ([...prevState, doc.data().choices[2]]))
+    } else {
+      setChosenLab(doc.data().choices);
     }
+    setSignUpList((prevState) => ([...prevState, doc.id]));
   })
 };
 
@@ -90,7 +100,7 @@ const choseLab = (priority, labIndex) => {
 
 
 const setDb = async (chosenLabList) => {
-  await setDoc(doc(db, 'choices', localStorage.getItem('email')), {
+  await setDoc(doc(db, 'choices', localStorage.getItem('uid')), {
     choices: chosenLabList,
     author: auth.currentUser.displayName,
     id: auth.currentUser.uid
@@ -101,19 +111,28 @@ const login = () => {
   // ログイン処理
   signInWithPopup(auth, provider).then((result) => {
     
+    if (!(userNames.includes(result.user.displayName))) {
+      return;
+    } 
+
     setIsAuth(true);
     localStorage.setItem('isAuth', true);
     localStorage.setItem('email', result.user.email);
-   
-    getMyChoices();
-    getOthersChoices();
+    localStorage.setItem('uid', result.user.uid);
+
+    getCurrentChoices();
+    if (!(signUpList.includes(result.user.uid))) {
+      setDb([null, null, null])
+    }
+    // getMyChoices();
+    // getOthersChoices();
   });
 }
 
 const logout = () => {
   // ログアウト処理
   setIsAuth(false);
-  localStorage.clear()
+  localStorage.clear();
 }
 
 
@@ -139,7 +158,7 @@ return (
 </center>
 
 
-{ isAuth ? (
+{ isAuth && signUpList.includes(localStorage.getItem('uid')) ? (
 
 
 
@@ -168,7 +187,7 @@ return (
 <tr>
 
 
-<th>研究室名</th>
+<th>研究室名 (第一志望人数)</th>
 <th>第一希望</th>
 <th>第二希望</th>
 <th>第三希望</th>
@@ -183,9 +202,10 @@ return (
       <tr>
         
         <td align='center'>
-          {labName} <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>第1志望</p>
-          <p style={{'display':'inline', 'font-size':'20px', 'opacity':'0.8'}}>{othersFirstChoices.filter(labIndex => labIndex === i).length + ((chosenLab[0]===i) ? 1: 0)}</p> 
-          <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>人</p>    
+          {labName} 
+          {/* <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>第1志望</p> */}
+          <p style={{'display':'inline', 'font-size':'20px', 'opacity':'0.8'}}> ({othersFirstChoices.filter(labIndex => labIndex === i).length + ((chosenLab[0]===i) ? 1: 0)})</p> 
+          {/* <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>人</p>     */}
         </td>
 
         <td align='center'>
