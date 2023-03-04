@@ -103,7 +103,7 @@ const choseLab = (priority, labIndex) => {
 const setDb = async (chosenLabList) => {
   await setDoc(doc(db, 'choices', sha512(localStorage.getItem('uid'))), {
     choices: chosenLabList,
-    author: auth.currentUser.displayName,
+    // author: auth.currentUser.displayName,
     // id: auth.currentUser.uid
   })
 }
@@ -172,7 +172,7 @@ return (
 
 
 <>
-<center>ようこそ {localStorage.getItem('email')} さん
+<center>ようこそ {localStorage.getItem('displayName')} さん
   <table>
     <tr>
       <td>
