@@ -102,7 +102,7 @@ const choseLab = (priority, labIndex) => {
 
 const setDb = async (chosenLabList) => {
   await setDoc(doc(db, 'choices', sha512(localStorage.getItem('uid'))), {
-    choices: chosenLabList,
+    choices: chosenLabList
     // author: auth.currentUser.displayName,
     // id: auth.currentUser.uid
   })
