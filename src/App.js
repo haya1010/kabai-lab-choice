@@ -166,7 +166,7 @@ return (
 </center>
 
 
-{ isAuth && signUpList.includes(sha512(localStorage.getItem('uid'))) ? (
+{ ( isAuth && signUpList.includes(sha512( ((localStorage.getItem('uid')) != null) ? (localStorage.getItem('uid')):('abc') )) ) ? (
 
 
 
