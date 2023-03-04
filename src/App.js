@@ -6,6 +6,7 @@ import './App.css';
 import { auth, db, provider } from './firebase';
 import './App.css';
 import { labNames, userNames } from './data';
+import sha512 from 'js-sha512';
 
 
 
@@ -60,15 +61,15 @@ const getCurrentChoices = async() => {
   setOthersThirdChoices([]);
   setSignUpList([]);
 
-  data.docs.map((doc) => {
-    if (doc.id != localStorage.getItem('uid')) { 
+  data.docs.map(async (doc) => {
+    await setSignUpList((prevState) => ([...prevState, doc.id]));
+    if (doc.id != sha512(localStorage.getItem('uid'))) { 
       setOthersFirstChoices((prevState) => ([...prevState, doc.data().choices[0]]))
       setOthersSecondChoices((prevState) => ([...prevState, doc.data().choices[1]]))
       setOthersThirdChoices((prevState) => ([...prevState, doc.data().choices[2]]))
     } else {
       setChosenLab(doc.data().choices);
     }
-    setSignUpList((prevState) => ([...prevState, doc.id]));
   })
 };
 
@@ -95,24 +96,21 @@ const choseLab = (priority, labIndex) => {
   setChosenLab(chosenLabList)
   setDb(chosenLabList);
   
-  
-
-  
 }
 
 
 
 const setDb = async (chosenLabList) => {
-  await setDoc(doc(db, 'choices', localStorage.getItem('uid')), {
+  await setDoc(doc(db, 'choices', sha512(localStorage.getItem('uid'))), {
     choices: chosenLabList,
     author: auth.currentUser.displayName,
-    id: auth.currentUser.uid
+    // id: auth.currentUser.uid
   })
 }
 
 const login = () => {
   // ログイン処理
-  signInWithPopup(auth, provider).then((result) => {
+  signInWithPopup(auth, provider).then(async (result) => {
     
     if (!(userNames.includes(result.user.displayName))) {
       alert('化バイのメンバーであることが確認できません.\n2020年度学部3年生(化学・バイオ工学科)クラスルームのメンバー(3月4日時点)のみがログインできます');
@@ -123,11 +121,17 @@ const login = () => {
     localStorage.setItem('isAuth', true);
     localStorage.setItem('email', result.user.email);
     localStorage.setItem('uid', result.user.uid);
+    localStorage.setItem('displayName', result.user.displayName);
 
-    getCurrentChoices();
-    if (!(signUpList.includes(result.user.uid))) {
+    await getCurrentChoices();
+    if (!(signUpList.includes(sha512(result.user.uid)))) {
       setDb([null, null, null])
     }
+    // console.log('-----');
+    // console.log(signUpList);
+    // console.log('-----');
+    // console.log(sha512(result.user.uid));
+    // console.log(!(signUpList.includes(sha512(result.user.uid))));
     // getMyChoices();
     // getOthersChoices();
   });
@@ -162,7 +166,7 @@ return (
 </center>
 
 
-{ isAuth && signUpList.includes(localStorage.getItem('uid')) ? (
+{ isAuth && signUpList.includes(sha512(localStorage.getItem('uid'))) ? (
 
 
 
@@ -172,7 +176,7 @@ return (
   <table>
     <tr>
       <td>
-      
+ 
 <button onClick={logout}>ログアウト</button>
       </td>
     </tr>
@@ -189,7 +193,7 @@ return (
 <table border='1px solid black' borderCollaps='collapse' align='center'>
 
 <tr>
-
+{/* {console.log(signUpList)} */}
 
 <th>研究室名 (第一志望人数)</th>
 <th>第一希望</th>
