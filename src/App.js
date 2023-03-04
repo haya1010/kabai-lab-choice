@@ -5,7 +5,8 @@ import {useEffect, useState} from 'react';
 import './App.css';
 import { auth, db, provider } from './firebase';
 import './App.css';
-import { labNames, userNames } from './data'
+import { labNames, userNames } from './data';
+
 
 
 function App() {
@@ -95,6 +96,8 @@ const choseLab = (priority, labIndex) => {
   setDb(chosenLabList);
   
   
+
+  
 }
 
 
@@ -112,6 +115,7 @@ const login = () => {
   signInWithPopup(auth, provider).then((result) => {
     
     if (!(userNames.includes(result.user.displayName))) {
+      alert('化バイのメンバーであることが確認できません.\n2020年度学部3年生(化学・バイオ工学科)クラスルームのメンバー(3月4日時点)のみがログインできます');
       return;
     } 
 
@@ -257,7 +261,7 @@ return (
 </>
 ):(
 <>
-<center>ログインしてください
+<center>東北大学アカウントでログインしてください
   <table>
     <tr>
       <td>
