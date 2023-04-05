@@ -5,7 +5,7 @@ import {useEffect, useState} from 'react';
 import './App.css';
 import { auth, db, provider } from './firebase';
 import './App.css';
-import { labNames, userNames } from './data';
+import { labNames, userNames, inmenLabNames, inmenNames, capacity } from './data';
 import sha512 from 'js-sha512';
 
 
@@ -90,7 +90,7 @@ useEffect(() => {
     
   // getMyChoices(); 
   // getOthersChoices();
-  const unsubscribe = onSnapshot(collection(db, 'choices'), (snapshot) => {
+  const unsubscribe = onSnapshot(collection(db, 'choices2'), (snapshot) => {
     getCurrentChoices();
     // getOthersChoices();
     // getCount();
@@ -112,7 +112,7 @@ useEffect(() => {
 // }
 
 const getCurrentChoices = async() => {
-  const data = await getDocs(collection(db, 'choices'));
+  const data = await getDocs(collection(db, 'choices2'));
   setUserCount(data.docs.length);
  
   setOthersFirstChoices([]);
@@ -160,7 +160,7 @@ const choseLab = (priority, labIndex) => {
 
 
 const setDb = async (chosenLabList) => {
-  await setDoc(doc(db, 'choices', sha512(localStorage.getItem('uid'))), {
+  await setDoc(doc(db, 'choices2', sha512(localStorage.getItem('uid'))), {
     choices: chosenLabList
     // author: auth.currentUser.displayName,
     // id: auth.currentUser.uid
@@ -254,7 +254,8 @@ return (
 <tr>
 {/* {console.log(signUpList)} */}
 
-<th>研究室名 (第一志望人数)</th>
+<th>研究室名 <p style={{'display':'inline', 'font-size':'10px', 'opacity':'0.8'}}>(院免+第一志望人数/定員)</p></th>
+<th>院免</th>
 <th>第一希望</th>
 <th>第二希望</th>
 <th>第三希望</th>
@@ -271,16 +272,28 @@ return (
         <td align='center'>
           {labName} 
           {/* <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>第1志望</p> */}
-          <p style={{'display':'inline', 'font-size':'20px', 'opacity':'0.8'}}> ({othersFirstChoices.filter(labIndex => labIndex === i).length + ((chosenLab[0]===i) ? 1: 0)})</p> 
+          <p style={{'display':'inline', 'font-size':'20px', 'opacity':'0.8'}}> ({othersFirstChoices.filter(labIndex => labIndex === i).length + ((chosenLab[0]===i) ? 1: 0) + inmenLabNames[i]} <p style={{'display':'inline', 'font-size':'10px', 'opacity':'0.8'}}>/{capacity[i]}</p>)</p>
           {/* <p style={{'display':'inline', 'font-size':'6px', 'opacity':'0.7'}}>人</p>     */}
         </td>
 
         <td align='center'>
          <>
+        {inmenLabNames[i]}
+        </>
+        </td>
+
+        <td align='center'>
+         <>
         {othersFirstChoices.map((labIndex) => labIndex==i ? <div>※</div>: <></> )}
+        {inmenNames.includes(localStorage.getItem('displayName')) ? (
+        <button className={chosenLab[0]==i ? 'kakuteime' : 'notme'}> 
+        {chosenLab[0]==i ? '選択中' : '選択する'}
+        </button>
+        ):(
         <button onClick={() => {choseLab(0, i)}} className={chosenLab[0]==i ? 'kakuteime' : 'notme'}> 
         {chosenLab[0]==i ? '選択中' : '選択する'}
         </button>
+        )}
         </>
         </td>
         
@@ -288,18 +301,30 @@ return (
         <td align='center'>
          <>
         {othersSecondChoices.map((labIndex) => labIndex==i ? <div>※</div>: <></> )}
-        <button onClick={() => {choseLab(1, i)}} className={chosenLab[1]==i ? 'kakuteime' : 'notme'}>  
+        {inmenNames.includes(localStorage.getItem('displayName')) ? (
+        <button className={chosenLab[1]==i ? 'kakuteime' : 'notme'}> 
         {chosenLab[1]==i ? '選択中' : '選択する'}
         </button>
+        ):(
+        <button onClick={() => {choseLab(1, i)}} className={chosenLab[1]==i ? 'kakuteime' : 'notme'}> 
+        {chosenLab[1]==i ? '選択中' : '選択する'}
+        </button>
+        )}
         </>
         </td>
 
         <td align='center'>
          <>
          {othersThirdChoices.map((labIndex) => labIndex==i ? <div>※</div>: <></> )}
+         {inmenNames.includes(localStorage.getItem('displayName')) ? (
+        <button className={chosenLab[2]==i ? 'kakuteime' : 'notme'}>  
+        {chosenLab[2]==i ? '選択中' : '選択する'} 
+        </button>
+        ):(
         <button onClick={() => {choseLab(2, i)}} className={chosenLab[2]==i ? 'kakuteime' : 'notme'}>  
         {chosenLab[2]==i ? '選択中' : '選択する'} 
         </button>
+        )}
         </>
         </td>   
       </tr>
