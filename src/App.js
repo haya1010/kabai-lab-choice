@@ -26,9 +26,68 @@ const [othersThirdChoices, setOthersThirdChoices] = useState([]);
 
 const [chosenLab, setChosenLab] = useState([null, null, null]);
 const [userCount, setUserCount] = useState();
+
+// var div = document.createElement('div');
+// div.innerHTML = `\
+// <script type="text/javascript">rakuten_design="slide";rakuten_affiliateId="25daf234.f17a6e59.25daf235.c941a3ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="468x160";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1677397537639";</script>
+// <script type="text/javascript" src="https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js"></script>
+// <a href='https://hb.afl.rakuten.co.jp/hsc/25dae539.5fc082df.25dae53a.0f1e33ff/?link_type=pict&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJwaWN0IiwiY29sIjoxLCJjYXQiOiI0NCIsImJhbiI6IjQ2MDEzNSIsImFtcCI6ZmFsc2V9' target="_blank" rel="nofollow sponsored noopener" style={{'word-wrap':'break-word'}}>\
+// <img src="https://hbb.afl.rakuten.co.jp/hsb/25dae539.5fc082df.25dae53a.0f1e33ff/?me_id=1&me_adv_id=460135&t=pict" border="0" style={{'margin':'2px'}} alt="" title=""></img></a>\
+// `
+// div.innerText = 'hi'
+// var center = document.getElementsByTagName('center')
+// console.log(center[3])
+// document.body.appendChild(div)
+// console.log(center[3])
+
+// var center = document.createElement('center')
+// center.innerHTML = `
+// <a href='https://hb.afl.rakuten.co.jp/hsc/25dae539.5fc082df.25dae53a.0f1e33ff/?link_type=pict&ut=eyJwYWdlIjoic2hvcCIsInR5cGUiOiJwaWN0IiwiY29sIjoxLCJjYXQiOiI0NCIsImJhbiI6IjQ2MDEzNSIsImFtcCI6ZmFsc2V9' target="_blank" rel="nofollow sponsored noopener" style={{'word-wrap':'break-word'}}>\
+// <img src="https://hbb.afl.rakuten.co.jp/hsb/25dae539.5fc082df.25dae53a.0f1e33ff/?me_id=1&me_adv_id=460135&t=pict" border="0" style={{'margin':'2px'}} alt="" title=""></img></a>\
+// `
+// document.body.appendChild(center);
+// }
+
+useEffect(() => {
   
-  useEffect(() => {
+  if (isAuth) {
+    // var center = document.getElementById('advertisement')
+    // console.log(center)
+    // var script1 = document.createElement('script');
+    // var script2 = document.createElement('script');
+    // script1.setAttribute('type', 'text/javascript');
+    // script2.setAttribute('type', 'text/javascript');
+    // script1.innerText = 'rakuten_design="slide";rakuten_affiliateId="25daf234.f17a6e59.25daf235.c941a3ad";rakuten_items="ctsmatch";rakuten_genreId="0";rakuten_size="468x160";rakuten_target="_blank";rakuten_theme="gray";rakuten_border="off";rakuten_auto_mode="on";rakuten_genre_title="off";rakuten_recommend="on";rakuten_ts="1677397537639";'
+    // script2.src ='https://xml.affiliate.rakuten.co.jp/widget/js/rakuten_widget.js';
+    // center.appendChild(script1);
+    // center.appendChild(script2);
+    // wait()
+
+    // var div = document.createElement('div');
+    // div.innerHTML = `\
+    // <p style="font-size:14px;margin-bottom:0px;opacity:0.4;">© All rights reserved</p>
+    // <a href="http://tohokuuniv.wp.xdomain.jp/home/" target="_blank" style="font-size:14px;margin-top:0px;opacity:0.4;text-decoration:none;display: block;">Presented by <p style="font-size:12px;display:inline;">東北大家庭教師emパワー</p></a>
+    // <br>
+    // `
+    // var footer = document.getElementsByTagName('footer')
+    // footer[0].appendChild(div)
+
+
+  }
+  // var center = document.getElementById('advertisement')
+  //   console.log(center)
+
+// async function wait() {
+//   await delay(5)
+// }
+
+//     function delay(n){
+//       return new Promise(function(resolve){
+//           setTimeout(resolve,n*1000);
+//       });
+  // }
   
+    
   // getMyChoices(); 
   // getOthersChoices();
   const unsubscribe = onSnapshot(collection(db, 'choices'), (snapshot) => {
@@ -260,6 +319,7 @@ return (
     </a> */}
   </center>
    
+  
 
 
 </>
